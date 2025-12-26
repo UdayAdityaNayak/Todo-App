@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -20,6 +21,19 @@ public class TaskService {
         Task task=new Task();
         task.setTitle(title);
         task.setCompleted(false);
+        taskRepository.save(task);
+    }
+
+    public void deleteTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No task present with id " + id));
+        taskRepository.delete(task);
+    }
+
+    public void toggleTask(Long id) {
+        Task task=taskRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("No task present with id"+id));
+        task.setCompleted(!task.getCompleted());
         taskRepository.save(task);
     }
 }
